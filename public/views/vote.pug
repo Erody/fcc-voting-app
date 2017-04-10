@@ -1,0 +1,13 @@
+extends layout
+
+block content
+    form(action="/polls/"+ id +"/vote" method="POST")
+        .form-group
+            h1 #{title}
+            .vote-options
+            button.btn.btn-primary Vote
+
+block scripts
+    script(type="text/javascript").
+        const chartOptions = !{JSON.stringify(options)};
+    script(src= "/static/scripts/vote.js", type= "text/javascript")

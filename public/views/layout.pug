@@ -1,0 +1,25 @@
+html
+    head
+        include includes/head
+        block head
+    body
+        .navbar.navbar-default
+            .container-fluid
+                .navbar-header
+                    a.navbar-brand(href="/") Voting App
+                .collapse.navbar-collapse
+                    ul.nav.navbar-nav
+                        if authenticated
+                            li: a(href="/user/" + user._id) Profile
+                            li: a(href="/polls/new") Create Poll
+                            li: a(href="/polls/latest") Latest Polls
+                        else
+                            li: a(href="/polls/latest") Latest Polls
+                    ul.nav.navbar-nav.navbar-right
+                        if authenticated
+                            li: a(href="/auth/logout") Logout
+                        else
+                            li: a(href="/auth/login") Login
+        block content
+        block footer
+        block scripts

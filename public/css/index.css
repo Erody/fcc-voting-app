@@ -1,0 +1,9 @@
+.flex-center-row {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.chart {
+    padding-top: 100px;
+}
