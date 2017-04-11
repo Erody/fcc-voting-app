@@ -1,11 +1,13 @@
 const express = require('express');
 const router = express.Router();
 const isAuthenticated = require('../middleware/various').isAuthenticated;
+const isOwner = require('../functions/various').isOwner;
 const randomNumberString = require('../functions/various').randomNumberString;
 const Chart = require('../models/Chart');
 const User = require('../models/User');
 const chartOptions = require('../functions/pug').chartOptions;
 const voteOptions = require('../functions/pug').voteOptions;
+const createOptionsArray = require('../functions/various').createOptionsArray;
 
 router.get('/', (req, res) => {
 	res.redirect('/latest');
@@ -46,6 +48,22 @@ router.get('/:id/vote', isAuthenticated, (req, res) => {
 		});
 });
 
+router.get('/:id/option', isAuthenticated, (req, res) => {
+	res.render('polls/newOption', {authenticated: req.isAuthenticated(), title: 'Placeholder', urlId: req.params.id})
+});
+
+router.get('/:id/delete', isAuthenticated, (req, res) => {
+	isOwner(req, (value) => {
+		if(value){
+			console.log('Correct user, start deletion.')
+		} else {
+			console.log('User is not owner, redirect to homepage');
+		}
+	});
+	// todo finish this function
+	res.redirect('/');
+});
+
 router.post('/:id/vote', isAuthenticated, (req, res) => {
 	const vote = req.body.vote;
 	Chart
@@ -63,18 +81,23 @@ router.post('/:id/vote', isAuthenticated, (req, res) => {
 		});
 });
 
+router.post('/:id/option', isAuthenticated, (req, res) => {
+	const options = createOptionsArray(req.body);
+	Chart
+		.findOneAndUpdate(
+			{ urlId: req.params.id },
+			{ $pushAll: { options: options}},
+			{ safe: true, upsert: true },
+			(err, model) => {
+				if(err) console.log(err)
+			}
+		);
+	res.redirect('/')
+});
+
 router.post('/new', isAuthenticated, (req, res) => {
 	const { title } = req.body;
-	const options = [];
-	for(const prop in req.body) {
-		if(req.body.hasOwnProperty(prop)) {
-			if(prop !== 'title') {
-				const optionName = req.body[prop]
-				const cleanKey = optionName.replace(/[^a-zA-Z0-9]/g, '');
-				options.push({[cleanKey]: [optionName, 0]})
-			}
-		}
-	}
+	const options = createOptionsArray(req.body);
 	const urlId = randomNumberString(12);
 	Chart.create({
 		name: title,
@@ -87,5 +110,8 @@ router.post('/new', isAuthenticated, (req, res) => {
 	});
 	res.redirect(`${urlId}/vote`);
 });
+
+
+
 
 module.exports = router;
