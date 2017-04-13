@@ -18,9 +18,8 @@ router.get('/latest', (req, res) => {
 		.sort('-created')
 		.exec((err, chart) => {
 			if(err) console.log(err);
-			res.render('chart', chartOptions(req, chart));
+			res.redirect(chart.urlId);
 		});
-	// render latest polls
 });
 
 router.get('/new', isAuthenticated, (req, res) => {
@@ -33,7 +32,14 @@ router.get('/:id', (req, res) => {
 		.populate('_creator', 'name') // only populate name, might add profile link and/or social media links as well
 		.exec((err, chart) => {
 			if(err) console.log(err);
-			res.render('chart', chartOptions(req, chart));
+			isOwner(req, (value) => {
+				if(value) {
+					res.render('chart', chartOptions(req, chart, {isOwner: true}));
+				} else {
+					res.render('chart', chartOptions(req, chart));
+				}
+			})
+
 		});
 
 });
@@ -52,16 +58,35 @@ router.get('/:id/option', isAuthenticated, (req, res) => {
 	res.render('polls/newOption', {authenticated: req.isAuthenticated(), title: 'Placeholder', urlId: req.params.id})
 });
 
+router.get('/:id/results', isAuthenticated, (req, res) => {
+	isOwner(req, (value) => {
+		if(value) {
+			Chart
+				.findOne({urlId: req.params.id}, {options: 1, name: 1})
+				.populate('_creator', 'name')
+				.exec((err, chart) => {
+					if(err) console.log(err);
+					res.render('result', {authenticated: req.isAuthenticated(), title: chart.name, chart});
+				});
+
+		} else {
+			res.redirect('/');
+		}
+	})
+});
+
 router.get('/:id/delete', isAuthenticated, (req, res) => {
 	isOwner(req, (value) => {
 		if(value){
-			console.log('Correct user, start deletion.')
+			Chart
+				.findOneAndRemove({ urlId: req.params.id }, (err, chart) => {
+					if(err) console.log(err);
+					res.redirect('/');
+				});
 		} else {
-			console.log('User is not owner, redirect to homepage');
+			res.redirect('/');
 		}
 	});
-	// todo finish this function
-	res.redirect('/');
 });
 
 router.post('/:id/vote', isAuthenticated, (req, res) => {
@@ -92,7 +117,7 @@ router.post('/:id/option', isAuthenticated, (req, res) => {
 				if(err) console.log(err)
 			}
 		);
-	res.redirect('/')
+	res.redirect(`/polls/${req.params.id}`)
 });
 
 router.post('/new', isAuthenticated, (req, res) => {

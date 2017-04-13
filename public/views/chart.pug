@@ -13,5 +13,9 @@ block content
             h1#chartHeader
             canvas#myChart
             a(href=urlId + "/vote").btn.btn-primary Vote
+            if(authenticated)
+                a(href=urlId + "/option").btn.btn-primary Add option
+            if(isOwner)
+                a(href=urlId + "/results").btn.btn-primary Results
 
 

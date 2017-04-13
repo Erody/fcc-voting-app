@@ -1,0 +1,10 @@
+extends layout
+
+block content
+    h1= 'Results of "' + title + '"'
+    ul#results
+
+block scripts
+    script(type="text/javascript").
+        const chart = !{JSON.stringify(chart)};
+    script(src="/static/scripts/results.js", type="text/javascript")

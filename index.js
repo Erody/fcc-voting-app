@@ -56,7 +56,5 @@ app.use(handle500);
 
 app.listen(port, () => {console.log(`Listening on port ${port}...`)});
 
-
-// todo Create user profile page.
-// todo User needs to see a list of his polls, clicking on one gives a detail view (options: votes) which also offers the option to share and delete
-// todo Authenticated users can add options to polls
+// todo write script for rendering result page
+// todo make everything pretty with css

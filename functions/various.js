@@ -25,16 +25,20 @@ exports.createOptionsArray = function(body){
 };
 
 exports.isOwner = function(req, cb) {
-	Chart
-		.findOne({ urlId: req.params.id })
-		.populate('_creator', '_id')
-		.exec((err, chart) => {
-			if(JSON.stringify(req.user._id) === JSON.stringify(chart._creator._id) ) {
-				cb(true);
-			} else {
-				cb(false);
-			}
-		});
+	if(req.isAuthenticated()) {
+		Chart
+			.findOne({ urlId: req.params.id })
+			.populate('_creator', '_id')
+			.exec((err, chart) => {
+				if(JSON.stringify(req.user._id) === JSON.stringify(chart._creator._id) ) {
+					cb(true);
+				} else {
+					cb(false);
+				}
+			});
+	} else {
+		cb(false);
+	}
 };
 
 function getRandomArbitrary(min, max) {

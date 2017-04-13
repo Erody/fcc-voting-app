@@ -1,11 +1,18 @@
-exports.chartOptions = function(req, chart) {
-	return {
+exports.chartOptions = function(req, chart, extraOptions) {
+	const optionObj = {
 		title: chart.name,
 		options: chart.options,
 		authenticated: req.isAuthenticated(),
 		user: req.user,
 		urlId: chart.urlId
 	};
+
+	if(extraOptions) {
+		return Object.assign(optionObj, extraOptions);
+	} else {
+		return optionObj;
+	}
+
 };
 
 exports.voteOptions = function(req, chart) {
