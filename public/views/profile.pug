@@ -1,9 +1,10 @@
 extends layout
 
 block content
-    h1= "Welcome " + userName
-    h3= "List of your polls"
-    ul#poll-list
+    .container.flex-center-column
+        h1= "Welcome " + userName
+        h3= "List of your polls"
+        ul#poll-list
 
 block scripts
     script(type="text/javascript").

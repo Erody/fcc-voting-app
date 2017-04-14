@@ -4,12 +4,13 @@ block scripts
     script(src= "/static/scripts/createChartForm.js", type= "text/javascript")
 
 block content
-    form(action="/polls/"+ urlId +"/option" method="post" id="newOption")
-        h1 Add an option
-        h2 #{title}
-        .form-group.chart-options
-        .form-group
-            button(type="button")#addFormOption.btn.btn-primary Add Option
-        .form-group
-            button(type="submit").btn.btn-primay Submit
+    .container.flex-center-row
+        form(action="/polls/"+ urlId +"/option" method="post" id="newOption")
+            h1 Add an option
+            h2 #{title}
+            .form-group.chart-options.flex-column
+            .form-group
+                button(type="button")#addFormOption.btn.btn-primary Add Option
+            .form-group
+                button(type="submit").btn.btn-primay Submit
 

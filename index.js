@@ -56,5 +56,12 @@ app.use(handle500);
 
 app.listen(port, () => {console.log(`Listening on port ${port}...`)});
 
-// todo write script for rendering result page
+
+// todo make sure a user can only vote once on each poll
+// todo form validation on frontend and backend!
+// todo return user to page the login button was clicked on after successful login
 // todo make everything pretty with css
+	// on profile: List of polls should consist of a card per poll. Cards can be extended to show detail view
+	// chart view should have a link to profile of the creator
+	// login should be a card with 'Login with github' and the github logo
+	// creating new poll/new options need some serious work

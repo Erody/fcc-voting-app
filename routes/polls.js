@@ -55,7 +55,12 @@ router.get('/:id/vote', isAuthenticated, (req, res) => {
 });
 
 router.get('/:id/option', isAuthenticated, (req, res) => {
-	res.render('polls/newOption', {authenticated: req.isAuthenticated(), title: 'Placeholder', urlId: req.params.id})
+	Chart
+		.findOne({urlId: req.params.id}, {name: 1})
+		.exec((err, chart) => {
+			if(err) console.log(err);
+			res.render('polls/newOption', {authenticated: req.isAuthenticated(), title: chart.name, urlId: req.params.id})
+		});
 });
 
 router.get('/:id/results', isAuthenticated, (req, res) => {
