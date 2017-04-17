@@ -4,7 +4,8 @@ const User = mongoose.model('User', {
 	oauthID: Number,
 	name: String,
 	created: Date,
-	charts: [{type: mongoose.Schema.Types.ObjectId, ref:'Chart'}]
+	charts: [{type: mongoose.Schema.Types.ObjectId, ref:'Chart'}],
+	votes: [{type: mongoose.Schema.Types.ObjectId, ref:'Chart'}],
 });
 
 module.exports = User;

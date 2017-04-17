@@ -57,7 +57,7 @@ app.use(handle500);
 app.listen(port, () => {console.log(`Listening on port ${port}...`)});
 
 
-// todo make sure a user can only vote once on each poll
+// todo add flash messages
 // todo form validation on frontend and backend!
 // todo return user to page the login button was clicked on after successful login
 // todo make everything pretty with css

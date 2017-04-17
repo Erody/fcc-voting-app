@@ -18,7 +18,11 @@ router.get('/latest', (req, res) => {
 		.sort('-created')
 		.exec((err, chart) => {
 			if(err) console.log(err);
-			res.redirect(chart.urlId);
+			if(!chart) {
+				res.json({error: 'No polls exist at this time.'})
+			} else {
+				res.redirect(chart.urlId);
+			}
 		});
 });
 
@@ -86,7 +90,7 @@ router.get('/:id/delete', isAuthenticated, (req, res) => {
 			Chart
 				.findOneAndRemove({ urlId: req.params.id }, (err, chart) => {
 					if(err) console.log(err);
-					res.redirect('/');
+					res.redirect(`/user/${chart._creator}`);
 				});
 		} else {
 			res.redirect('/');
@@ -95,19 +99,23 @@ router.get('/:id/delete', isAuthenticated, (req, res) => {
 });
 
 router.post('/:id/vote', isAuthenticated, (req, res) => {
-	const vote = req.body.vote;
 	Chart
 		.findOne({urlId: req.params.id}, (err, chart) => {
-			chart.options.forEach(option => {
-				if(option[vote] !== undefined) {
-					option[vote][1]++;
-					chart.markModified('options');
-					chart.save(err => {
-						if(err) console.log(err);
-						res.redirect(`/polls/${req.params.id}`);
-					});
+			for(let i = 0; i<chart.votes.length; i++ ) {
+				const voteId = JSON.stringify(chart.votes[i]._id);
+				const userId = JSON.stringify(req.user._id);
+				if(voteId === userId) {
+					// flash message user already voted
+					res.redirect('/');
+					break;
 				}
-			});
+				if(i === chart.votes.length && voteId !== userId) {
+					castVote(chart, req, res);
+				}
+			}
+			if(!chart.votes.length){
+				castVote(chart, req, res);
+			}
 		});
 });
 
@@ -134,14 +142,32 @@ router.post('/new', isAuthenticated, (req, res) => {
 		options,
 		urlId,
 		_creator: req.user.id,
-		created: Date.now()
+		created: Date.now(),
+		votes: []
 	}, (err, chart) => {
 		if(err) console.log(err);
 	});
 	res.redirect(`${urlId}/vote`);
 });
 
-
+function castVote(chart, req, res) {
+	chart.options.forEach(option => {
+		if(option[req.body.vote] !== undefined) {
+			option[req.body.vote][1]++;
+			chart.votes.push({
+				_id: req.user._id,
+				votedFor: Object.keys(option)[0],
+				timeStamp: Date.now()
+			});
+			chart.markModified('options');
+			chart.markModified('votes');
+			chart.save(err => {
+				if(err) console.log(err);
+				res.redirect(`/polls/${req.params.id}`);
+			});
+		}
+	});
+}
 
 
 module.exports = router;

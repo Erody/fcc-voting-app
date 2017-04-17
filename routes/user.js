@@ -14,10 +14,11 @@ router.get('/:id', (req, res) => {
 	User
 		.findOne({_id: req.params.id}, {oauthID: 0})
 		.exec((err, user) => {
+			if(err) console.log(err);
 			Chart
 				.find({_creator: req.params.id})
 				.exec((err, charts) => {
-					console.log(req.user);
+					if(err) console.log(err);
 					res.render('profile', profileOptions(req, charts, user));
 				});
 		});
