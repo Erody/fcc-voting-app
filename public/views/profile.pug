@@ -4,9 +4,10 @@ block content
     .container.flex-center-column
         h1= "Welcome " + userName
         h3= "List of your polls"
-        ul#poll-list
+        #poll-list
 
 block scripts
     script(type="text/javascript").
         const chartArray = !{JSON.stringify(charts)};
+        const owner = !{JSON.stringify(isThisOwner)};
     script(src="/static/scripts/pollList.js", type="text/javascript")

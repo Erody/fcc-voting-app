@@ -2,6 +2,7 @@ require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
+const cookieParser = require('cookie-parser');
 const session = require('express-session');
 const passport = require('passport');
 const User = require('./models/User');
@@ -56,8 +57,6 @@ app.use(handle500);
 
 app.listen(port, () => {console.log(`Listening on port ${port}...`)});
 
-
-// todo add flash messages
 // todo form validation on frontend and backend!
 // todo return user to page the login button was clicked on after successful login
 // todo make everything pretty with css
@@ -65,3 +64,4 @@ app.listen(port, () => {console.log(`Listening on port ${port}...`)});
 	// chart view should have a link to profile of the creator
 	// login should be a card with 'Login with github' and the github logo
 	// creating new poll/new options need some serious work
+// todo add flash messages
