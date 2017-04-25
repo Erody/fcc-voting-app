@@ -48,6 +48,7 @@ router.get('/:id', (req, res) => {
 
 });
 
+
 router.get('/:id/vote', isAuthenticated, (req, res) => {
 	Chart
 		.findOne({urlId: req.params.id}, {options: 1, name: 1})
