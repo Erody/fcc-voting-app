@@ -9,7 +9,6 @@ const handle500 = require('./functions/error').handle500;
 const handle404 = require('./functions/error').handle404;
 const generalRoutes = require('./routes/general');
 const authRoutes = require('./routes/auth');
-const apiRoutes = require('./routes/api');
 const pollsRoutes = require('./routes/polls');
 const userRoutes = require('./routes/user');
 
@@ -48,7 +47,6 @@ passport.deserializeUser((id, done) => {
 
 app.use('/', generalRoutes);
 app.use('/auth', authRoutes);
-app.use('/api', apiRoutes);
 app.use('/polls', pollsRoutes);
 app.use('/user', userRoutes);
 app.use(handle404);
